@@ -1,78 +1,17 @@
-const fs = require("fs");
-const nodemailer = require("nodemailer");
-const Mailgen = require("mailgen");
-const { EMAIL_ADRESS, PASSWORD } = require("../env");
+const DataModel = require("../models/DataModel")
 
-const sendMessageEmail = async (req, res) => {
-  let testAccount = await nodemailer.createTestAccount();
+const sendDataBase = async (req, res) => {
   let { name, email, subject, message } = req.body;
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-  });
-
-  const messageEmail = {
-    from: `${email}`,
-    to: EMAIL_ADRESS,
-    subject: `${subject}`,
-    text: `${message}`,
-    html: `<h3>
-    Hello my name is: ${name}
-    Email: ${email}
-    
-    Subject is: ${subject}
-    
-    Message is: ${message} 
-    
-    </h3>`,
-  };
-
-  transporter
-    .sendMail(messageEmail)
-    .then((info) => {
-      fs.readFile("./dataHistory.json", "utf-8", (err, data) => {
-        if (err) {
-          console.log("An error occurred: ", err.message);
-        } else {
-          const dataJson = JSON.parse(data);
-
-          const infoUrl = nodemailer.getTestMessageUrl(info);
-
-          let newClient = {
-            name: `${name}`,
-            email: `${email}`,
-            subject: `${subject}`,
-            message: `${message}`,
-            preview: `${infoUrl}`,
-          };
-
-          dataJson.clients.push(newClient);
-
-          fs.writeFile(
-            "./dataHistory.json",
-            JSON.stringify(dataJson),
-            (err) => {
-              if (err) {
-                console.log("Error is:", err.message);
-              } else {
-                console.log("Names updated!", newClient);
-              }
-            }
-          );
-        }
-      });
+  DataModel.create({ name, email, subject, message })
+    .then((data) => {
+      console.log("Added Successfully...");
+      console.log(data);
+      res.send(data);
     })
-    .catch((err) => {
-      return res.status(500).json({ err });
-    });
+    .catch((err) => console.log(err));
 };
 
 module.exports = {
-  sendMessageEmail,
+  sendDataBase
 };

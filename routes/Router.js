@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const { sendMessageEmail } = require("../controllers/dataController");
+const { sendDataBase } = require("../controllers/dataController");
 
-router.post("/sendToEmail", sendMessageEmail);
+router.post("/sendToDataBase", sendDataBase);
 
 module.exports = router;
