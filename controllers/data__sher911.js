@@ -1,7 +1,7 @@
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 const Mailgen = require("mailgen");
-const { EMAIL_ADRESS, PASSWORD } = require("../env");
+const { EMAIL, PASSWORD } = require("../env");
 
 const sendMessageEmail = async (req, res) => {
   let testAccount = await nodemailer.createTestAccount();
@@ -19,7 +19,7 @@ const sendMessageEmail = async (req, res) => {
 
   const messageEmail = {
     from: `${email}`,
-    to: EMAIL_ADRESS,
+    to: process.env.EMAIL_ADRESS,
     subject: `${subject}`,
     text: `${message}`,
     html: `<h3>
@@ -38,7 +38,7 @@ const sendMessageEmail = async (req, res) => {
     .then((info) => {
       fs.readFile("./dataHistory.json", "utf-8", (err, data) => {
         if (err) {
-          console.log("An error occurred: ", err.message);
+          console.log("As error occurred: ", err.message);
         } else {
           const dataJson = JSON.parse(data);
 
@@ -74,5 +74,5 @@ const sendMessageEmail = async (req, res) => {
 };
 
 module.exports = {
-  sendMessageEmail,
+  sendMessageEmail
 };
