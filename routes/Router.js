@@ -1,6 +1,11 @@
 const router = require("express").Router();
-const { sendDataBase } = require("../controllers/dataController");
+const {
+  getDataForDB,
+  sendDataBase,
+  saveDataToHistory,
+} = require("../controllers/dataController");
 
-router.post("/sendToDataBase", sendDataBase);
+router.get("/getData", getDataForDB);
+router.post("/sendData", sendDataBase);
 
 module.exports = router;

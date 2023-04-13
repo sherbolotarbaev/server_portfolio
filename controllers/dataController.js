@@ -1,4 +1,10 @@
-const DataModel = require("../models/DataModel")
+const fs = require("fs");
+const DataModel = require("../models/DataModel");
+
+const getDataForDB = async (req, res) => {
+  const data = await DataModel.find();
+  res.send(data);
+};
 
 const sendDataBase = async (req, res) => {
   let { name, email, subject, message } = req.body;
@@ -12,6 +18,35 @@ const sendDataBase = async (req, res) => {
     .catch((err) => console.log(err));
 };
 
+const saveDataToHistory = (req, res) => {
+  fs.readFile("./dataHistory.json", "utf-8", (err, data) => {
+    if (err) {
+      console.log("As error occurred: ", err.message);
+    } else {
+      const dataJson = JSON.parse(data);
+
+      let newClient = {
+        name: `${name}`,
+        email: `${email}`,
+        subject: `${subject}`,
+        message: `${message}`,
+      };
+
+      dataJson.clients.push(newClient);
+
+      fs.writeFile("./dataHistory.json", JSON.stringify(dataJson), (err) => {
+        if (err) {
+          console.log("Error is:", err.message);
+        } else {
+          console.log("History updated!", newClient);
+        }
+      });
+    }
+  });
+};
+
 module.exports = {
-  sendDataBase
+  getDataForDB,
+  sendDataBase,
+  saveDataToHistory,
 };
