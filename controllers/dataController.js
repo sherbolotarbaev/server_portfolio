@@ -18,6 +18,14 @@ const sendDataBase = async (req, res) => {
     .catch((err) => console.log(err));
 };
 
+const deleteDataForDB = async (req, res) => {
+  const { _id } = req.body;
+
+  DataModel.findByIdAndDelete(_id)
+    .then(() => res.set(201).send("Deleted Successfully..."))
+    .catch((err) => console.log(err));
+};
+
 const saveDataToHistory = (req, res) => {
   fs.readFile("./dataHistory.json", "utf-8", (err, data) => {
     if (err) {
@@ -49,4 +57,5 @@ module.exports = {
   getDataForDB,
   sendDataBase,
   saveDataToHistory,
+  deleteDataForDB,
 };
